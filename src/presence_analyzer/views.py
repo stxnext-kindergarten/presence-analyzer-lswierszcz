@@ -8,7 +8,13 @@ from collections import defaultdict
 from flask import redirect, abort
 
 from presence_analyzer.main import app
-from presence_analyzer.utils import jsonify, get_data, mean, group_by_weekday, seconds_since_midnight
+from presence_analyzer.utils import (
+    jsonify,
+    get_data,
+    mean,
+    group_by_weekday,
+    seconds_since_midnight as ssm
+)
 
 import logging
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -89,8 +95,14 @@ def presence_start_end(user_id):
 
     sums = defaultdict(lambda: defaultdict(int))
     for date in data[user_id]:
-        sums[date.weekday()]['start'] += seconds_since_midnight(data[user_id][date]['start'])
-        sums[date.weekday()]['end'] += seconds_since_midnight(data[user_id][date]['end'])
         sums[date.weekday()]['items'] += 1
+        sums[date.weekday()]['start'] += ssm(data[user_id][date]['start'])
+        sums[date.weekday()]['end'] += ssm(data[user_id][date]['end'])
 
-    return [[calendar.day_name[i][:3], sums[i]['start']/sums[i]['items'], sums[i]['end']/sums[i]['items']] for i in xrange(5) if sums[i]['items'] > 0]
+    return [
+        [
+            calendar.day_name[i][:3],
+            sums[i]['start'] / sums[i]['items'],
+            sums[i]['end'] / sums[i]['items']
+        ] for i in xrange(5) if sums[i]['items'] > 0
+    ]
