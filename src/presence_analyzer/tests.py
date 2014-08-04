@@ -7,8 +7,8 @@ import json
 import datetime
 import unittest
 
-from presence_analyzer import main, views, utils
-
+from presence_analyzer import main, utils
+from presence_analyzer import views # pylint: disable=unused-import
 
 TEST_DATA_CSV = os.path.join(
     os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.csv'
@@ -133,8 +133,8 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Test parsing of CSV file with wrong data.
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_WRONG_CSV})
-
         data = utils.get_data()
+        self.assertIsNotNone(data)
 
 
 def suite():
