@@ -9,10 +9,10 @@ from flask import redirect, abort
 
 from presence_analyzer.main import app
 from presence_analyzer.utils import (
-    jsonify,
     get_data,
-    mean,
     group_by_weekday,
+    jsonify,
+    mean,
     seconds_since_midnight as ssm
 )
 
