@@ -1,3 +1,10 @@
-.coverage
 *.pyc
 *.komodoproject
+.coverage
+.installed.cfg
+bin/
+develop-eggs/
+eggs/
+parts/
+src/*.egg-info/
+var/
