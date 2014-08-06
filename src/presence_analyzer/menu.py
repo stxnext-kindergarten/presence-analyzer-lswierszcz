@@ -1,4 +1,4 @@
-from flask import request
+from flask import current_app, request
 from werkzeug.local import LocalProxy
 
 __all__ = ['main_menu', ]
