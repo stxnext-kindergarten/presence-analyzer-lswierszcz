@@ -5,8 +5,7 @@ Defines views.
 
 import calendar
 from collections import defaultdict
-from flask import redirect, abort
-
+from flask import abort, redirect, render_template, url_for
 from presence_analyzer.main import app
 from presence_analyzer.utils import (
     get_data,
@@ -25,7 +24,15 @@ def mainpage():
     """
     Redirects to front page.
     """
-    return redirect('/static/presence_weekday.html')
+    return redirect(url_for('presence_weekday'))
+
+
+@app.route('/presence-weekday')
+def presence_weekday():
+    """
+    Presence weekday view.
+    """
+    return render_template('presence_weekday.html')
 
 
 @app.route('/api/v1/users', methods=['GET'])
