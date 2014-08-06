@@ -35,6 +35,8 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
         self.client = main.app.test_client()
 
+        # Create context for request object.
+        # This is reqired if url_for function is used.
         self.ctx = main.app.test_request_context()
         self.ctx.push()
 
@@ -165,6 +167,8 @@ class PresenceAnalyzerMenuTestCase(unittest.TestCase):
         """
         self.client = main.app.test_client()
 
+        # Create context for request object.
+        # This is reqired if url_for function is used.
         self.ctx = main.app.test_request_context()
         self.ctx.push()
 
@@ -187,6 +191,7 @@ class PresenceAnalyzerMenuTestCase(unittest.TestCase):
             resp = self.client.get(current_url)
             self.assertEqual(resp.status_code, 200)
 
+            # Change context for current url
             with main.app.test_request_context(current_url):
                 menu = main.app.extensions['menu'].menu()
 
