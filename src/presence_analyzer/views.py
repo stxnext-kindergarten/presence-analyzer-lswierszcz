@@ -34,12 +34,21 @@ def presence_weekday():
     """
     return render_template('presence_weekday.html')
 
+
 @app.route('/presence-mean-time')
 def presence_mean_time():
     """
     Presence mean time view.
     """
     return render_template('presence_mean_time.html')
+
+
+@app.route('/presence-start-end')
+def presence_start_end():
+    """
+    Presence start-end view.
+    """
+    return render_template('presence_start_end.html')
 
 
 @app.route('/api/v1/users', methods=['GET'])
@@ -98,7 +107,7 @@ def presence_weekday_view(user_id):
 
 @app.route('/api/v1/presence_start_end/<int:user_id>', methods=['GET'])
 @jsonify
-def presence_start_end(user_id):
+def presence_start_end_data(user_id):
     """
     Returns average start/end time of given user grouped by weekday.
     """
