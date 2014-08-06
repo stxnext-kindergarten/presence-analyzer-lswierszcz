@@ -5,6 +5,7 @@ Flask app initialization.
 
 
 from flask import Flask
+
 from presence_analyzer.menu import Menu
 
 
