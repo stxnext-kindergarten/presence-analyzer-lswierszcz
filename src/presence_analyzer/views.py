@@ -34,6 +34,13 @@ def presence_weekday():
     """
     return render_template('presence_weekday.html')
 
+@app.route('/presence-mean-time')
+def presence_mean_time():
+    """
+    Presence mean time view.
+    """
+    return render_template('presence_mean_time.html')
+
 
 @app.route('/api/v1/users', methods=['GET'])
 @jsonify
