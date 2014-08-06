@@ -12,10 +12,7 @@ app = Flask(__name__)  # pylint: disable=invalid-name
 
 
 # Add menu extension into Flask
-MAIN_MENU = Menu(app=app)
-
-
-app.extensions['menu'] = MAIN_MENU
+app.extensions['menu'] = MAIN_MENU = Menu(app=app)
 
 
 MAIN_MENU.add_entry(name='Presence by weekday', url='/presence-weekday')
