@@ -7,6 +7,8 @@ import json
 import datetime
 import unittest
 
+from flask import url_for
+
 from presence_analyzer import main, utils
 from presence_analyzer import views  # pylint: disable=unused-import
 
@@ -33,11 +35,14 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
         self.client = main.app.test_client()
 
+        self.ctx = main.app.test_request_context()
+        self.ctx.push()
+
     def tearDown(self):
         """
         Get rid of unused objects after each test.
         """
-        pass
+        self.ctx.pop()
 
     def test_mainpage(self):
         """
@@ -45,7 +50,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 302)
-        assert resp.headers['Location'].endswith('/presence_weekday.html')
+        assert resp.headers['Location'].endswith(url_for('presence_weekday'))
 
     def test_api_users(self):
         """
@@ -150,6 +155,46 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertIsNotNone(data)
 
 
+class PresenceAnalyzerMenuTestCase(unittest.TestCase):
+    """
+    Menu extension tests.
+    """
+    def setUp(self):
+        """
+        Before each test, set up a environment.
+        """
+        self.client = main.app.test_client()
+
+        self.ctx = main.app.test_request_context()
+        self.ctx.push()
+
+    def tearDown(self):
+        """
+        Get rid of unused objects after each test.
+        """
+        self.ctx.pop()
+
+    def test_active_element(self):
+        """
+        Test active element in menu
+        """
+        for view_name in [
+                'presence_weekday',
+                'presence_mean_time',
+                'presence_start_end'
+        ]:
+            current_url = url_for(view_name)
+            resp = self.client.get(current_url)
+            self.assertEqual(resp.status_code, 200)
+
+            with main.app.test_request_context(current_url):
+                menu = main.app.extensions['menu'].menu()
+
+                for item in menu.entries:
+                    if current_url == item.url:
+                        self.assertTrue(item.is_active())
+
+
 def suite():
     """
     Default test suite.
@@ -157,6 +202,7 @@ def suite():
     base_suite = unittest.TestSuite()
     base_suite.addTest(unittest.makeSuite(PresenceAnalyzerViewsTestCase))
     base_suite.addTest(unittest.makeSuite(PresenceAnalyzerUtilsTestCase))
+    base_suite.addTest(unittest.makeSuite(PresenceAnalyzerMenuTestCase))
     return base_suite
 
 
