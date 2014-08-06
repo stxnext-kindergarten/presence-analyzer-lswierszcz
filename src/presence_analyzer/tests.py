@@ -58,7 +58,6 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(len(data), 2)
         self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
 
-<<<<<<< HEAD
     def test_mean_time_weekday(self):
         """
         Test mean time view for user that exists in test data.
