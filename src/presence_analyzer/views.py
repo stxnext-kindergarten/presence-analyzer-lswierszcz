@@ -5,8 +5,7 @@ Defines views.
 
 import calendar
 from collections import defaultdict
-from flask import redirect, abort
-
+from flask import abort, redirect, render_template, url_for
 from presence_analyzer.main import app
 from presence_analyzer.utils import (
     get_data,
@@ -25,7 +24,31 @@ def mainpage():
     """
     Redirects to front page.
     """
-    return redirect('/static/presence_weekday.html')
+    return redirect(url_for('presence_weekday'))
+
+
+@app.route('/presence-weekday')
+def presence_weekday():
+    """
+    Presence weekday view.
+    """
+    return render_template('presence_weekday.html')
+
+
+@app.route('/presence-mean-time')
+def presence_mean_time():
+    """
+    Presence mean time view.
+    """
+    return render_template('presence_mean_time.html')
+
+
+@app.route('/presence-start-end')
+def presence_start_end():
+    """
+    Presence start-end view.
+    """
+    return render_template('presence_start_end.html')
 
 
 @app.route('/api/v1/users', methods=['GET'])
@@ -84,7 +107,7 @@ def presence_weekday_view(user_id):
 
 @app.route('/api/v1/presence_start_end/<int:user_id>', methods=['GET'])
 @jsonify
-def presence_start_end(user_id):
+def presence_start_end_data(user_id):
     """
     Returns average start/end time of given user grouped by weekday.
     """
@@ -104,5 +127,7 @@ def presence_start_end(user_id):
             calendar.day_name[i][:3],
             sums[i]['start'] / sums[i]['items'],
             sums[i]['end'] / sums[i]['items']
-        ] for i in xrange(5) if sums[i]['items'] > 0
+        ]
+        for i in xrange(5)
+        if sums[i]['items'] > 0
     ]
