@@ -111,5 +111,7 @@ def presence_start_end(user_id):
             calendar.day_name[i][:3],
             sums[i]['start'] / sums[i]['items'],
             sums[i]['end'] / sums[i]['items']
-        ] for i in xrange(5) if sums[i]['items'] > 0
+        ]
+        for i in xrange(5)
+        if sums[i]['items'] > 0
     ]
