@@ -73,6 +73,7 @@ def jsonify(function):
     return inner
 
 
+@cache()
 def get_data():
     """
     Extracts presence data from CSV file and groups it by user_id.
