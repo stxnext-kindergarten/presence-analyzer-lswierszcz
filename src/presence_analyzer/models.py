@@ -1,8 +1,7 @@
 from lxml import etree
-import os
+from os.path import isfile
 import requests
 
-from presence_analyzer.main import app
 from presence_analyzer import settings
 
 
@@ -16,10 +15,10 @@ class User(object):
         """
         Fetches users.xml file specified in settings file
         """
-        r = requests.get(settings.USERS_XML_SOURCE)
-        if r.ok:
+        request = requests.get(settings.USERS_XML_SOURCE)
+        if request.ok:
             with open(settings.USERS_XML, 'w') as users_file:
-                users_file.write(r.content)
+                users_file.write(request.content)
             return True
 
         return False
@@ -31,10 +30,7 @@ class User(object):
         """
         users = []
 
-        if (
-            not os.path.isfile(settings.USERS_XML) and
-            not User.fetch_users_file()
-        ):
+        if not (isfile(settings.USERS_XML) or User.fetch_users_file()):
             return users
 
         with open(settings.USERS_XML, 'r') as xml_file:
