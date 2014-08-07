@@ -2,11 +2,13 @@
 """
 Defines views.
 """
-
 import calendar
 from collections import defaultdict
+
 from flask import abort, redirect, render_template, url_for
+
 from presence_analyzer.main import app
+from presence_analyzer.models import User
 from presence_analyzer.utils import (
     get_data,
     group_by_weekday,
@@ -57,11 +59,7 @@ def users_view():
     """
     Users listing for dropdown.
     """
-    data = get_data()
-    return [
-        {'user_id': i, 'name': 'User {0}'.format(str(i))}
-        for i in data.keys()
-    ]
+    return User.get_data()
 
 
 @app.route('/api/v1/mean_time_weekday/<int:user_id>', methods=['GET'])

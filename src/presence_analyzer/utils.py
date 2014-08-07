@@ -11,6 +11,7 @@ from datetime import datetime
 from flask import Response
 
 from presence_analyzer.main import app
+from presence_analyzer.models import User
 
 import logging
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -102,3 +103,10 @@ def mean(items):
     Calculates arithmetic mean. Returns zero for empty lists.
     """
     return float(sum(items)) / len(items) if len(items) > 0 else 0
+
+
+def fetch_users_file():
+    """
+    Fetches users XML file from external server
+    """
+    return User.fetch_users_file()

@@ -9,7 +9,7 @@ import unittest
 
 from flask import url_for
 
-from presence_analyzer import main, utils
+from presence_analyzer import main, utils, settings
 from presence_analyzer import views  # pylint: disable=unused-import
 
 TEST_DATA_CSV = os.path.join(
@@ -58,12 +58,19 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         Test users listing.
         """
+        # Override users file in settings
+        settings.USERS_XML = os.path.join(settings.APP_DATA, 'test_users.xml')
+
         resp = self.client.get('/api/v1/users')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(len(data), 2)
-        self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
+        self.assertDictEqual(data[0], {
+            u'user_id': u'10',
+            u'name': u'User 10',
+            u'image_url': u'https://localhost/api/images/users/10'
+        })
 
     def test_mean_time_weekday(self):
         """
