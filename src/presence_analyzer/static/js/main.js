@@ -9,3 +9,31 @@ function parseInterval(value) {
     result.setMilliseconds(value * 1000);
     return result;
 }
+
+
+jQuery(function($) {
+    loading = $('#loading');
+
+    $.getJSON('/api/v1/users', function(result) {
+        var $dropdown = $('#user_id');
+        $.each(result, function(item) {
+            $dropdown.append(
+                $('<option />').data('image_url', this.image_url)
+                               .val(this.user_id)
+                               .text(this.name)
+            );
+        });
+
+        $dropdown.change(function(e) {
+            var $option = $('option:selected', this);
+            $('#user_info').html(
+                $('<img/>').attr('src', $option.data('image_url'))
+                           .attr('alt', $option.text())
+                           .attr('title', $option.text())
+            );
+        });
+
+        $dropdown.show();
+        loading.hide();
+    });
+});

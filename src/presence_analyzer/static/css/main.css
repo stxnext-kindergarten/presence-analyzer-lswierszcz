@@ -63,3 +63,8 @@ body {
 .user-selector {
     padding-bottom: 1em;
 }
+
+#user_info {
+    padding: 1em 0;
+    text-align: right;
+}
