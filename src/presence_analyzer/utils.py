@@ -7,6 +7,7 @@ import csv
 from json import dumps
 from functools import wraps
 from datetime import datetime
+from threading import Lock
 
 from flask import Response
 
@@ -15,6 +16,45 @@ from presence_analyzer.models import User
 
 import logging
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
+
+
+def cache(timeout=600):
+    """
+    Decorator for caching function output
+    """
+    cache = dict()
+    lock = Lock()
+
+    def decorator(function):
+        """
+        Function that is used for parametrized decorator
+        """
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            """
+            This docstring will be overridden by @wraps decorator.
+            """
+            key = '{0}{1}{2}'.format(
+                function.__repr__(),
+                args.__repr__(),
+                kwargs.__repr__(),
+            )
+
+            if (
+                    key in cache and
+                    timeout > (datetime.now() - cache[key]['created']).seconds
+            ):
+                return cache[key]['data']
+
+            with lock:
+                result = function(*args, **kwargs)
+                cache[key] = {
+                    'data': result,
+                    'created': datetime.now()
+                }
+            return result
+        return wrapper
+    return decorator
 
 
 def jsonify(function):
