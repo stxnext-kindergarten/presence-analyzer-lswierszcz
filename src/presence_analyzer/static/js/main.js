@@ -14,8 +14,13 @@ function parseInterval(value) {
 jQuery(function($) {
     loading = $('#loading');
 
+    /**
+     * Get users list after the page DOM is loaded
+     */
     $.getJSON('/api/v1/users', function(result) {
         var $dropdown = $('#user_id');
+
+        // Populate users dropdown with data
         $.each(result, function(item) {
             $dropdown.append(
                 $('<option />').data('image_url', this.image_url)
@@ -24,6 +29,7 @@ jQuery(function($) {
             );
         });
 
+        // Display user image when dropdown value changes
         $dropdown.change(function(e) {
             var $option = $('option:selected', this);
             $('#user_info').html(
