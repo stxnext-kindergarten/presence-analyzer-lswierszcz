@@ -34,11 +34,7 @@ def cache(timeout=600):
             """
             This docstring will be overridden by @wraps decorator.
             """
-            key = '{0}{1}{2}'.format(
-                function.__repr__(),
-                args.__repr__(),
-                kwargs.__repr__(),
-            )
+            key = '{}{}{}'.format(function, args, kwargs)
 
             if (
                     key in cache and
@@ -50,7 +46,7 @@ def cache(timeout=600):
                 result = function(*args, **kwargs)
                 cache[key] = {
                     'data': result,
-                    'created': datetime.now()
+                    'created': datetime.now(),
                 }
             return result
         return wrapper
