@@ -7,6 +7,7 @@ import csv
 from json import dumps
 from functools import wraps
 from datetime import datetime
+from threading import Lock
 
 from flask import Response
 
@@ -15,6 +16,41 @@ from presence_analyzer.models import User
 
 import logging
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
+
+
+def cache(timeout=600):
+    """
+    Decorator for caching function output
+    """
+    cache = dict()
+    lock = Lock()
+
+    def decorator(function):
+        """
+        Function that is used for parametrized decorator
+        """
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            """
+            This docstring will be overridden by @wraps decorator.
+            """
+            key = '{}{}{}'.format(function, args, kwargs)
+
+            if (
+                    key in cache and
+                    timeout > (datetime.now() - cache[key]['created']).seconds
+            ):
+                return cache[key]['data']
+
+            with lock:
+                result = function(*args, **kwargs)
+                cache[key] = {
+                    'data': result,
+                    'created': datetime.now(),
+                }
+            return result
+        return wrapper
+    return decorator
 
 
 def jsonify(function):
@@ -33,6 +69,7 @@ def jsonify(function):
     return inner
 
 
+@cache()
 def get_data():
     """
     Extracts presence data from CSV file and groups it by user_id.
